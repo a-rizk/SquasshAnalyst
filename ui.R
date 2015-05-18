@@ -386,6 +386,15 @@ shinyUI(
                           
                             wellPanel(
                             h4("Statistical analysis"),
+                            selectInput('statmethod',
+                                        'Method choice :',
+                                        choices=list(
+                                          'One way ANOVA, multiple comparisons with Tukey HSD (assume Gaussian distribution)'=1,
+                                          'Kruskal-Wallis, multiple comparisons with Dunn\'s test, Bonferroni adjusted (non parametric, do not assume Gaussian distribution)'=2
+                                          ),
+                                        width='100%',
+                                        #width='600px',
+                                        selected = 1),
                             #actionButton("stat_display", "Compute one way ANOVA and Tukey analysis."),
                              #conditionalPanel(
                                #condition = "input.stat_display != 0",
@@ -498,10 +507,11 @@ shinyUI(
                             p(align='justify',span(strong("Most representative image:")),
                               'SuqasshAnalyst displays the image whose attribute value is closest to the median value of all images in the chosen condition. This thus provides the most representative image of the group for the calclated attribute. The file name of the image is given on top of its contact sheet preview.'),
                             
-                            p(align='justify',span(strong("Statistical analysis:")),'When at least two experimental conditions are selected statistical significance tests results are displayed here.
-                              One way ANOVA provides the probability that all groups have the same mean. Pairwise comparisons are made with Tukey Honest Significance difference test.
-                              Star ratings are given next to p values with **** for p value < 0.0001, ***  for 0.0001 < p value < 0.001, **  for 0.001 < p value < 0.01,* for  0.01 < p value < 0.05 and ns for p value > 0.05.
-                              ')
+                            p(align='justify',span(strong("Statistical analysis:")),'
+When at least two experimental conditions are selected statistical significance tests results are performed in this section. Two statistical analysis are possible, parametric or non parametric. The first one is one way ANOVA followed by Tukey Honest Significance difference test for multiple comparisons. The second one is the 
+Kruskal-Wallis test followed by Dunn\'s test adjusted with the Bonferonni correction for multiple comparisons. ANOVA and Tukey are parametric, that is they require that samples come from Gaussian distributions. The non parametric tests Kruskal-Wallis and Dunn do not require this assumption but only take into account the rankings
+of the values and have thus less statistical power. Star ratings are given next to p values with **** for p value < 0.0001, *** for 0.0001 < p value < 0.001, ** for 0.001 < p value < 0.01, * for 0.01 < p value < 0.05 and ns for p value > 0.05.
+')
                             
                             
                             #sidebarLayout

@@ -1,7 +1,7 @@
 library(shiny)
 
 source("package_handling.R") 
-libraries <- c("VennDiagram","gtools","zoo")
+libraries <- c("VennDiagram","gtools","zoo","FSA")#,"dunn.test"
 print(libraries)
 for(library in libraries) 
 { 
@@ -915,14 +915,65 @@ pvstr = function(pval){
   
 }
 
-
-stat_aov_tukey= function(data, nbconds, condnames){
+stat_kw_dunn= function(data, nbconds, condnames){
+  
 
   var = as.vector(data)
   cond = rep (condnames,rep(max_imgs,nbconds))
-
+  
+  #print('var')
+  #print(var)
+  #print('cond')
+  #print(cond)
+  
   data2= data.frame(var, cond) 
+  
+  #print(length(var))
+  #print(length(cond))
+  ttt=pairw.kw(y=var,x=factor(cond),conf=.95)
+  #print('pw')
+  #print(ttt)
+  
+  
+  #ddd=dunnTest(var ~ factor(cond) ,method="bonferroni")
+  #print(ddd)
+  
+  
+  
+  
+  kw = kruskal.test(var ~ cond , data2) #kruskal wallis
+  pstring=pvstr(kw[['p.value']])
+  pstring= paste("Probability that mean ranks of the groups are the same (Kruskall-Wallis p-value) :", pstring)
+  descr= "Pairwise comparisons with Dunn test, adjusted for multiple comparisons with Bonferroni correction :"
+  #descr2= "Upper values : z test statistic"
+  #descr3= "Lower values : p-value with Bonferroni correction for multiple comparisons"
+  #res<-capture.output(dunn.test(var, cond,kw=TRUE,method="bonferroni"))
+  #dtest=dunn.test(var, cond,kw=TRUE,method="bonferroni")
+  #print(dtest)
+  
 
+  
+  
+  #res=res[9:length(res)]
+  #res= c(pstring,'',descr,descr2, descr3,'',res)
+  #print(ttt[[4]][5])
+  res = capture.output(ttt[[4]][5])
+  res= c(pstring,'',descr,'',res)
+  
+  return(res)
+}
+
+
+stat_aov_tukey= function(data, nbconds, condnames){
+
+  
+  
+  var = as.vector(data)
+  cond = rep (condnames,rep(max_imgs,nbconds))
+
+  
+  data2= data.frame(var, cond) 
+  
   aovr = aov(var ~ cond , data2) #1 way anova 
 
   
@@ -1529,6 +1580,8 @@ ismovie <- reactive({
       #print("gfdgfdgdf")
     #print("call s")
     #isolate({string_res=stats()})
+      print(input$statmethod)
+      
       string_res=stats()
      # print(string_res)
 
@@ -1800,7 +1853,10 @@ compute_venn_3chans <- reactive({
 
  stats <- reactive ({
    if(length(values$condselect)>1 && !(is.null(img_features())))
-   stat_aov_tukey(img_features(),length(values$condselect), values$condselect)
+     if(input$statmethod==1)
+       stat_aov_tukey(img_features(),length(values$condselect), values$condselect)
+    else
+        stat_kw_dunn(img_features(),length(values$condselect), values$condselect)
    else
      "Statistical analysis is done when at least two conditions are selected."
  })

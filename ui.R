@@ -75,8 +75,10 @@ shinyUI(
 
                             
                             sidebarPanel(
-                              h5("Welcome to SquasshAnalyst!"),
-                              p(align='justify','SquasshAnalyst is a data analysis software designed to be used after the subcellular image analysis tool Squassh
+                              h4("Welcome to SquasshAnalyst!"),
+                              div(img(src="icon.png", height = 150, width = 150), style="text-align: center;"),
+                              #img(src="icon2.png", height = 150, width = 150, "Welcome to SquasshAnalyst!"),
+                              p(align='justify','SquasshAnalyst is a data analysis software designed to be used after the subcellular image segmentation tool Squassh
                                 to quantify subcellular objects features, generate charts and perform statistical analysis.'),
                               h5("Data input"),
                               p(align='justify',"Select a folder containing Squassh analyzed fluorescence microscopy images."),

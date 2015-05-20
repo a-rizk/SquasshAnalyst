@@ -108,7 +108,7 @@ shinyUI(
                    tabPanel("Segmentation overview",
                             #select condition to display
                             selectizeInput("contact_sheet_condition", label = h4("Select previewed condition"), 
-                                        choices=c("C1" , "C2", "C3" ),#, width='604px', 
+                                        choices=c("C1" , "C2", "C3" ), width='600px', 
                                         selected = 1),
                             conditionalPanel(
                               condition = "input.contact_sheet_condition != 0",
@@ -149,7 +149,7 @@ shinyUI(
                                               "Object number",
                                               "Object number / Cell Size"
                                             ), 
-                                            #width='605px',
+                                            width='600px',
                                             selected = 1)
                                         #),
                                   ),
@@ -158,9 +158,8 @@ shinyUI(
                                               'Compare experimental conditions :',
                                               choices=c("1","2"),
                                               multiple=TRUE,
-                                              selectize=TRUE
-                                              #width='100%' 
-                                              ),
+                                              selectize=TRUE,
+                                              width='100%' ),
                                   actionButton('applychanges', label="Apply conditions changes"),
                                   actionButton('selectall', label="Select all"),
                                   actionButton('deselectall', label="Deselect all")
@@ -178,7 +177,7 @@ shinyUI(
                                   input.feature_choice == 'Pearson correlation inside cell mask')
                                   ",
                                   
-                                  selectizeInput("channel_choice_pearson", label=("Select two channels for Pearson correlation :"),# width='601px',
+                                  selectizeInput("channel_choice_pearson", label=("Select two channels for Pearson correlation :"), width='600px',
                                                  choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3), 
                                                  selected= c(1,2), multiple=TRUE, options = list(maxItems = 2))
                                   
@@ -195,8 +194,7 @@ shinyUI(
                                   ",
                                   br(),
                                   
-                                  selectInput("channel_choice_all", label=("Feature computed on channel :"), 
-                                              #width='500px',
+                                  selectInput("channel_choice_all", label=("Feature computed on channel :"), width='500px',
                                               choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3) 
                                   )
                                   
@@ -209,12 +207,11 @@ shinyUI(
                                   || input.feature_choice == 'Colocalization (size)'
                                   || input.feature_choice == 'Colocalization (signal)'",
                                   
-                                  selectInput("channel_choice_coloc", label=("Percentage of channel ..."),
-                                              #width='602px',
+                                  selectInput("channel_choice_coloc", label=("Percentage of channel ..."), width='600px',
                                               choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3), 
                                               selected = 1),
                                   
-                                  selectizeInput("channel_choice_coloc2", label=("... colocalizing with channel(s) :"),# width='603px',
+                                  selectizeInput("channel_choice_coloc2", label=("... colocalizing with channel(s) :"), width='600px',
                                                  choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3),
                                                  multiple=TRUE,
                                                  options = list(maxItems = 2)
@@ -357,10 +354,8 @@ shinyUI(
                                   selectInput('repres',
                                               'Most representative image for condition :',
                                               choices=c(Choose ='','No conditions computed.'),
-                                              selectize=TRUE
-                                              #,
-                                              #width='100%'
-                                              ),
+                                              selectize=TRUE,
+                                              width='100%' ),
                                   conditionalPanel(
                                     condition="input.repres!='' && input.repres!='No conditions computed.'",
                                     
@@ -399,7 +394,7 @@ shinyUI(
                                           'One way ANOVA, multiple comparisons with Tukey HSD (assume Gaussian distribution)'=1,
                                           'Kruskal-Wallis, multiple comparisons with Dunn\'s test, Bonferroni adjusted (non parametric, do not assume Gaussian distribution)'=2
                                           ),
-                                        #width='100%',
+                                        width='100%',
                                         #width='600px',
                                         selected = 1),
                             #actionButton("stat_display", "Compute one way ANOVA and Tukey analysis."),

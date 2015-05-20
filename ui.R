@@ -108,7 +108,7 @@ shinyUI(
                    tabPanel("Segmentation overview",
                             #select condition to display
                             selectizeInput("contact_sheet_condition", label = h4("Select previewed condition"), 
-                                        choices=c("C1" , "C2", "C3" ), width='604px', 
+                                        choices=c("C1" , "C2", "C3" ),#, width='604px', 
                                         selected = 1),
                             conditionalPanel(
                               condition = "input.contact_sheet_condition != 0",
@@ -177,7 +177,7 @@ shinyUI(
                                   input.feature_choice == 'Pearson correlation inside cell mask')
                                   ",
                                   
-                                  selectizeInput("channel_choice_pearson", label=("Select two channels for Pearson correlation :"), width='601px',
+                                  selectizeInput("channel_choice_pearson", label=("Select two channels for Pearson correlation :"),# width='601px',
                                                  choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3), 
                                                  selected= c(1,2), multiple=TRUE, options = list(maxItems = 2))
                                   
@@ -211,7 +211,7 @@ shinyUI(
                                               choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3), 
                                               selected = 1),
                                   
-                                  selectizeInput("channel_choice_coloc2", label=("... colocalizing with channel(s) :"), width='603px',
+                                  selectizeInput("channel_choice_coloc2", label=("... colocalizing with channel(s) :"),# width='603px',
                                                  choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3),
                                                  multiple=TRUE,
                                                  options = list(maxItems = 2)

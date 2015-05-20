@@ -149,7 +149,7 @@ shinyUI(
                                               "Object number",
                                               "Object number / Cell Size"
                                             ), 
-                                            width='605px',
+                                            #width='605px',
                                             selected = 1)
                                         #),
                                   ),
@@ -158,8 +158,9 @@ shinyUI(
                                               'Compare experimental conditions :',
                                               choices=c("1","2"),
                                               multiple=TRUE,
-                                              selectize=TRUE,
-                                              width='100%' ),
+                                              selectize=TRUE
+                                              #width='100%' 
+                                              ),
                                   actionButton('applychanges', label="Apply conditions changes"),
                                   actionButton('selectall', label="Select all"),
                                   actionButton('deselectall', label="Deselect all")
@@ -194,7 +195,8 @@ shinyUI(
                                   ",
                                   br(),
                                   
-                                  selectInput("channel_choice_all", label=("Feature computed on channel :"), width='500px',
+                                  selectInput("channel_choice_all", label=("Feature computed on channel :"), 
+                                              #width='500px',
                                               choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3) 
                                   )
                                   
@@ -207,7 +209,8 @@ shinyUI(
                                   || input.feature_choice == 'Colocalization (size)'
                                   || input.feature_choice == 'Colocalization (signal)'",
                                   
-                                  selectInput("channel_choice_coloc", label=("Percentage of channel ..."), width='602px',
+                                  selectInput("channel_choice_coloc", label=("Percentage of channel ..."),
+                                              #width='602px',
                                               choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3), 
                                               selected = 1),
                                   
@@ -354,8 +357,10 @@ shinyUI(
                                   selectInput('repres',
                                               'Most representative image for condition :',
                                               choices=c(Choose ='','No conditions computed.'),
-                                              selectize=TRUE,
-                                              width='100%' ),
+                                              selectize=TRUE
+                                              #,
+                                              #width='100%'
+                                              ),
                                   conditionalPanel(
                                     condition="input.repres!='' && input.repres!='No conditions computed.'",
                                     
@@ -394,7 +399,7 @@ shinyUI(
                                           'One way ANOVA, multiple comparisons with Tukey HSD (assume Gaussian distribution)'=1,
                                           'Kruskal-Wallis, multiple comparisons with Dunn\'s test, Bonferroni adjusted (non parametric, do not assume Gaussian distribution)'=2
                                           ),
-                                        width='100%',
+                                        #width='100%',
                                         #width='600px',
                                         selected = 1),
                             #actionButton("stat_display", "Compute one way ANOVA and Tukey analysis."),

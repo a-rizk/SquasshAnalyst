@@ -2,7 +2,7 @@ library(shiny)
 
 source("package_handling.R") 
 libraries <- c("VennDiagram","gtools","zoo","asbio")#,"dunn.test"
-print(libraries)
+#print(libraries)
 for(library in libraries) 
 { 
   #print("lib server")
@@ -133,7 +133,7 @@ load_all_condition_data <- function(img_data_files, ch1_data_files, ch2_data_fil
 load_data <- function(selected_path) {
 
   setwd(selected_path)
-  print(getwd())
+  #print(getwd())
   selected_path<<-selected_path
   img_data_files = list.files(path=selected_path, pattern= "ImagesData.csv$", recursive = TRUE)  
   ch1_data_files = list.files(path=selected_path, pattern= "ObjectsData_c1.csv$", recursive = TRUE) # !double escape "\\."  escapes "."
@@ -921,19 +921,12 @@ stat_kw_dunn= function(data, nbconds, condnames){
   var = as.vector(data)
   cond = rep (condnames,rep(max_imgs,nbconds))
   
-  #print('var')
-  #print(var)
-  #print('cond')
-  #print(cond)
   
   data2= data.frame(var, cond) 
   
-  #print(length(var))
-  #print(length(cond))
+
   ttt=pairw.kw(y=var,x=factor(cond),conf=.95)
-  #print('pw')
-  #print(ttt)
-  
+
   
   #ddd=dunnTest(var ~ factor(cond) ,method="bonferroni")
   #print(ddd)
@@ -1264,7 +1257,6 @@ output$condnames <- renderText({
   #print('render cond names')
   if(is.null(dataInput()))
   {
-    #print('touptut')  
     "No Squassh data selected"
   }
   else {
@@ -1346,7 +1338,7 @@ observe({
 
   select_path <- reactive({
     selected_path<<- ""
-    print(selected_path)
+    #print(selected_path)
     #print(input$selectdirectory)
     #|| is.null(input$selectdirectory)
     #if(is.null(input$selectmacdirectory) ){
@@ -1383,7 +1375,7 @@ observe({
     
     
     #print("select path")
-    print(selected_path)
+    #print(selected_path)
     selected_path
     #}
   })
@@ -1408,14 +1400,12 @@ ismovie <- reactive({
   if(empty_data(dataInput()))
     FALSE
   else {
-    #print('ismovieb')
+
     file1 = dataInput()[[1]][[4]][1,1]
     file2 = dataInput()[[1]][[4]][2,1]
-    #print(file1)
-    #print(file2)
+
     ismov = (file1 == file2)
-    #print('ismov')
-    #print(ismov)
+
     ismov
   }
 })
@@ -1451,7 +1441,6 @@ ismovie <- reactive({
     
     res=a
     
-    #print("channle choice")
     if(feature %in% c('Colocalization (number)','Colocalization (size)','Colocalization (signal)'))
     {
       res=coloc
@@ -1580,7 +1569,7 @@ ismovie <- reactive({
       #print("gfdgfdgdf")
     #print("call s")
     #isolate({string_res=stats()})
-      print(input$statmethod)
+      #print(input$statmethod)
       
       string_res=stats()
      # print(string_res)
@@ -1598,10 +1587,10 @@ ismovie <- reactive({
     list = NULL
     contact_sheet_sel=input$contact_sheet_condition
     cond=grep(contact_sheet_sel,cond_names(), fixed = TRUE)
-    print(empty_data(dataInput()))
-    print(contact_sheet_sel=="")
-    print(length(cond)==0)
-    print(length(cond_names())==0)
+    #print(empty_data(dataInput()))
+    #print(contact_sheet_sel=="")
+    #print(length(cond)==0)
+    #print(length(cond_names())==0)
     
     if(empty_data(dataInput()) ||
          contact_sheet_sel=="" ||
@@ -1609,7 +1598,7 @@ ismovie <- reactive({
          length(cond_names())==0)#|is.null(input$excl1_1)
     {
       
-      print('excl list')
+      #print('excl list')
      
       list
       
@@ -1623,7 +1612,7 @@ ismovie <- reactive({
       #print("excl list 2")
       #print(vartest)
       if(is.null(input[[vartest]])){
-        print('vartest')
+        #print('vartest')
         list
       }
       else{
@@ -1631,9 +1620,9 @@ ismovie <- reactive({
           excl=paste0("excl",cond,"_",i)
           if(input[[excl]])
           {list=c(list,i)
-           #print("ici")
+
            include_matrix[i,cond]<<-FALSE}
-          #print("ici2")
+
         }
         #print(include_matrix)
         #print("exclude")
@@ -1862,16 +1851,16 @@ compute_venn_3chans <- reactive({
  })
 
 movie_compare <- observe({
-  print('compare')
+  #print('compare')
   input$compare_movie
   isolate({
     if(!is.null(img_features())) 
     {
-      print("do compare")
+      #print("do compare")
     mov_comp_data <<- rollmean_data()
     }
     else{
-      print("no compare")
+      #print("no compare")
       mov_comp_data <<- NULL
     }
       
@@ -1880,17 +1869,17 @@ movie_compare <- observe({
 
 
 movie_compare_name <- observe({
-  print('compare name')
+ # print('compare name')
   input$compare_movie
   isolate({
     if(!is.null(img_features())) 
     {
-      print("do compare name")
+      #print("do compare name")
       mov_comp_name <<- paste(input$feature_choice, chan_name())
-      print(mov_comp_name)
+      #print(mov_comp_name)
     }
     else{
-      print("no compare name")
+      #print("no compare name")
       mov_comp_name <<- NULL
     }
     
@@ -1943,8 +1932,8 @@ rollmean_data <- reactive({
 if(other)
   res=chans[ChannelChoice()]
 if(coloc){
- print('coloc')
- print(chans[colocChannels()])
+ #print('coloc')
+ #print(chans[colocChannels()])
   res=paste(chans[ChannelChoice()],'with',paste(chans[colocChannels()], collapse=', '))
   
 }
@@ -2479,7 +2468,9 @@ obstaboutput <- observe({
   contact_sheet_sel=input$contact_sheet_condition
   isolate({
     if(is.null(dataInput()) | contact_sheet_sel=="")
-    {print('no tab update')}
+    {
+      #print('no tab update')
+    }
     else {
       global_dyn_ui_tab<<-TRUE
       #print('observe channels tabs')
@@ -2615,19 +2606,19 @@ obsimgoutput <- observe({
           else{
             cond=grep(contact_sheet_sel,cond_names(),fixed = TRUE)
             path = dataInput()[[cond]][[2]]
-            print("working directory : ")
-            print(getwd())
+            #print("working directory : ")
+            #print(getwd())
             #print(list.files(path='.'))
             
             outfile=paste0(path,(ii-1),"_cs.png")
             #print(file.path(getwd(),outfile))
-            print(path)
-            print(outfile)
+            #print(path)
+            #print(outfile)
             # Return a list containing the filename
             list(src = outfile,
                  contentType = 'image/png',
                  width = 600,
-                 height = 300,
+                 #height = 300,
                  alt = "contact sheet image not found")
           }
           

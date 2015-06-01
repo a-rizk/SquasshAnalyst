@@ -1950,6 +1950,14 @@ res
 
 
  output$boxplot <- renderPlot({
+   
+   validate(
+     need(dataInput(), 'Select input in data input tab.'),
+     need(filteredData(), ''),
+     need(!is.null(img_features()) || (input$feature_choice %in% c('Total object volume Venn diagram')), 'Select at least one condition to create a graph.')
+   )
+   
+   
     if(is.null(filteredData()) ||
          (is.null(img_features()) && !(input$feature_choice %in% c('Total object volume Venn diagram'))) 
           )

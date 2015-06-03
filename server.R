@@ -1,7 +1,7 @@
 library(shiny)
 
 source("package_handling.R") 
-libraries <- c("VennDiagram","gtools","zoo","asbio")#,"dunn.test"
+libraries <- c("VennDiagram","gtools","zoo","asbio","rappdirs")#,"dunn.test"
 #print(libraries)
 for(library in libraries) 
 { 
@@ -1351,8 +1351,25 @@ observe({
       #print("select mac dir")
       if(onmacos)
         selected_path <<- choose_dir_mac() 
-      else
-        selected_path <<- choose.dir() 
+      else{
+        dir.create(user_cache_dir('R'), showWarnings = FALSE, recursive = TRUE)
+        path_file=file.path(user_cache_dir('R'),'squasshpath')
+        
+        if(file.exists(path_file)){
+          load(path_file)
+          if(exists('sqpath'))
+            sqpath=choose.dir(default=sqpath, caption= 'Select folder containing Squassh data:')    
+          else
+            sqpath=choose.dir(caption= 'Select folder containing Squassh data:')
+          save(sqpath, file = path_file)
+          selected_path <<- sqpath
+        }
+        else{
+          sqpath=choose.dir(caption= 'Select folder containing Squassh data:')
+          save(sqpath, file = path_file)
+          selected_path <<- sqpath
+        }
+      }
       
         if(is.na(selected_path))
           selected_path <<-"."
@@ -1661,6 +1678,7 @@ output$warningw <- renderText({
     ""
 })
 
+outputOptions(output, "warningw", priority = 10)
 
 
 output$platform <- renderText({

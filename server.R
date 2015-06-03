@@ -1655,7 +1655,10 @@ ismovie <- reactive({
   })
 
 output$warningw <- renderText({
-    "Please switch to R for directory selection window."
+  if(input$selectdirectory != 0)
+    "alt-tab to R for directory selection window"
+  else
+    ""
 })
 
 

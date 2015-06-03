@@ -1335,8 +1335,19 @@ observe({
 },priority=1)
 
 
+output$warningw <- renderText({
+  if(input$selectdirectory != 0)
+  {
+    "alt-tab to R for directory selection window"
+  }
+  else
+    ""
+})
 
-  select_path <- reactive({
+outputOptions(output, "warningw", priority = 10)
+
+
+select_path <- reactive({
     selected_path<<- ""
     #print(selected_path)
     #print(input$selectdirectory)
@@ -1671,14 +1682,7 @@ ismovie <- reactive({
     }
   })
 
-output$warningw <- renderText({
-  if(input$selectdirectory != 0)
-    "alt-tab to R for directory selection window"
-  else
-    ""
-})
 
-outputOptions(output, "warningw", priority = 10)
 
 
 output$platform <- renderText({

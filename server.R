@@ -1336,6 +1336,10 @@ observe({
 
 
 output$warningw <- renderText({
+  input_message()
+})
+
+input_message <- reactive({
   if(input$selectdirectory != 0)
   {
     "alt-tab to R for directory selection window"
@@ -1347,7 +1351,7 @@ output$warningw <- renderText({
 outputOptions(output, "warningw", priority = 10)
 
 
-select_path <- reactive({
+select_path <- eventReactive(input_message(),{
     selected_path<<- ""
     #print(selected_path)
     #print(input$selectdirectory)

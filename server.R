@@ -1,7 +1,7 @@
 library(shiny)
 
 source("package_handling.R") 
-libraries <- c("VennDiagram","gtools","zoo","asbio","rappdirs")#,"dunn.test"
+libraries <- c("VennDiagram","gtools","zoo","rappdirs")#,"dunn.test" , "asbio" is crashing
 #print(libraries)
 for(library in libraries) 
 { 

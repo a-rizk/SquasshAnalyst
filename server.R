@@ -52,6 +52,7 @@ temp_condition_vector <- function(img_data_file_path, ch1_files, ch2_files, ch3_
   c3=ch3_files[grepl(condname, ch3_files, fixed = TRUE)]
   res=img_data_file_path
   
+  
   if (length(c1)==0)return(res)
   res=c(res,head(c1,1)) #if more than one data file for channel, not well defined take first by default
   
@@ -137,6 +138,7 @@ load_data <- function(selected_path) {
   selected_path<<-selected_path
   img_data_files = list.files(path=selected_path, pattern= "ImagesData.csv$", recursive = TRUE)  
   ch1_data_files = list.files(path=selected_path, pattern= "ObjectsData_c1.csv$", recursive = TRUE) # !double escape "\\."  escapes "."
+  if(length(ch1_data_files)==0) ch1_data_files = list.files(path=selected_path, pattern= "ObjectsData.csv$", recursive = TRUE)
   ch2_data_files = list.files(path=selected_path, pattern= "ObjectsData_c2.csv$", recursive = TRUE) 
   ch3_data_files = list.files(path=selected_path, pattern= "ObjectsData_c3.csv$", recursive = TRUE) 
 
@@ -1432,9 +1434,8 @@ ismovie <- reactive({
 
     file1 = dataInput()[[1]][[4]][1,1]
     file2 = dataInput()[[1]][[4]][2,1]
-
     ismov = (file1 == file2)
-
+    if (!ismov && is.integer(file2)){if(file2-file1 ==1) ismov = TRUE} 
     ismov
   }
 })

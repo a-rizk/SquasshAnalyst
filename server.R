@@ -1434,8 +1434,13 @@ ismovie <- reactive({
 
     file1 = dataInput()[[1]][[4]][1,1]
     file2 = dataInput()[[1]][[4]][2,1]
+    #print(file1)
+    #print(file2)
     ismov = (file1 == file2)
     if (!ismov && is.integer(file2)){if(file2-file1 ==1) ismov = TRUE} 
+    #print("ismov")
+    if(is.na(ismov)){ismov=FALSE}
+    #print(ismov)
     ismov
   }
 })
@@ -1693,7 +1698,6 @@ output$platform <- renderText({
   
   
 output$movie <- renderText({
-  #print(ismovie())
   paste(ismovie())
 })
   

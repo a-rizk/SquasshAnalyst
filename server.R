@@ -1621,7 +1621,7 @@ ismovie <- reactive({
   excl_list <- observe({
     list = NULL
     contact_sheet_sel=input$contact_sheet_condition
-    cond=grep(contact_sheet_sel,cond_names(), fixed = TRUE)
+    cond=match(contact_sheet_sel,cond_names())
     #print(empty_data(dataInput()))
     #print(contact_sheet_sel=="")
     #print(length(cond)==0)
@@ -1639,7 +1639,7 @@ ismovie <- reactive({
       
     }
     else {
-      cond=grep(contact_sheet_sel,cond_names(), fixed = TRUE)
+      cond=match(contact_sheet_sel,cond_names())
       #print("excl list 1")
       #print(cond)
       nb = nrow(dataInput()[[cond]][[4]])
@@ -2401,7 +2401,7 @@ output$seg_params <- renderText({
   if(is.null(dataInput()) | contact_sheet_sel=="")
     ""
   else { 
-    cond=grep(contact_sheet_sel,cond_names(), fixed = TRUE)
+    cond=match(contact_sheet_sel,cond_names())
     dataInput()[[cond]][[3]]
   }
 })
@@ -2412,7 +2412,7 @@ output$seg_params <- renderText({
       tags$h4("No data selected")
     else {
     
-    cond=grep(contact_sheet_sel,cond_names(), fixed = TRUE)
+    cond=match(contact_sheet_sel,cond_names())
     
     path = dataInput()[[cond]][[2]]
     nb = nrow(dataInput()[[cond]][[4]])
@@ -2527,7 +2527,7 @@ obstaboutput <- observe({
           if(is.null(dataInput()) | contact_sheet_sel=="")
           {}
           else{
-            cond=grep(contact_sheet_sel,cond_names(),fixed = TRUE)
+            cond=match(contact_sheet_sel,cond_names())
             dataf = dataInput()[[cond]][[4]]
             res= dataf[dataf$Image.ID==(ii-1),]
             rownames(res)<-paste("Img",(ii-1))
@@ -2588,7 +2588,7 @@ obstaboutput <- observe({
           if(is.null(dataInput()) | contact_sheet_sel=="")
           {}
           else{
-            cond=grep(contact_sheet_sel,cond_names(),fixed = TRUE) 
+            cond=match(contact_sheet_sel,cond_names()) 
             dataf = dataInput()[[cond]][[4]]
             res= factor(dataf[dataf$Image.ID==(ii-1),'File'])
             res=levels(res)
@@ -2643,7 +2643,7 @@ obsimgoutput <- observe({
             
           }
           else{
-            cond=grep(contact_sheet_sel,cond_names(),fixed = TRUE)
+            cond=match(contact_sheet_sel,cond_names())
             path = dataInput()[[cond]][[2]]
             #print("working directory : ")
             #print(getwd())
@@ -2805,7 +2805,7 @@ output$ch3rep <- renderText({
 output$namerep <- renderText({
   condrep = input$repres
   if(repimg()!=-1){
-    cond_data=grep(condrep,cond_names(),fixed = TRUE)
+    cond_data=match(condrep,cond_names())
   dataf = dataInput()[[cond_data]][[4]]
   res= factor(dataf[dataf$Image.ID==repimg()-1,'File'])
   res=levels(res)
@@ -2828,7 +2828,7 @@ output$valuerep <- renderText({
   if(repimg()!=-1){
     comp_data = img_features()
     medians = apply(comp_data,2,median,na.rm = TRUE)
-    cond_comp=grep(condrep,values$condselect,fixed = TRUE)
+    cond_comp=match(condrep,values$condselect)
     paste('Condition median value :',
           signif(medians[cond_comp],3),
           ', image value :',
@@ -2851,7 +2851,7 @@ output$imgrep =renderImage({
         if(repimg()!=-1){
   
           
-        cond_data=grep(condrep,cond_names(),fixed = TRUE)
+        cond_data=match(condrep,cond_names())
         path = dataInput()[[cond_data]][[2]]
     
         #print(path)
@@ -2889,7 +2889,7 @@ repimg <- reactive({
     }
     else {
         #find representative image
-        cond_comp=grep(condrep,values$condselect,fixed = TRUE)
+        cond_comp=match(condrep,values$condselect)
   
         comp_data = img_features()
         medians = apply(comp_data,2,median,na.rm = TRUE)

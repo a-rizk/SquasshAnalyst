@@ -720,7 +720,7 @@ coloc = function(data_list, channel, overlapChannel, max_sizes, min_sizes, min_i
       #total number of vesicles
       n1=nrow(img_df)
       #colocalizing vesicles
-      c1=nrow(img_df[ img_df[,overlapString]>0.5 & img_df$Coloc.object.intensity>minIntOv & img_df$Coloc.object.size<maxSizeOv & img_df$Coloc.object.size>minSizeOv,])
+      c1=nrow(img_df[ img_df[,overlapString]>0.5 & img_df[,colocIntString]>minIntOv & img_df[,colocSizeString]<maxSizeOv & img_df[,colocSizeString]>minSizeOv,])
       
       
       if(n1!=0){

@@ -143,6 +143,8 @@ shinyUI(
                                               "Colocalization (number)", 
                                               "Colocalization (size)", 
                                               "Colocalization (signal)",
+                                              "RatioScreen",
+                                              "RatioScreen normalized",
                                               "Pearson correlation", 
                                               "Pearson correlation inside cell mask", 
                                               "Total object volume Venn diagram",
@@ -194,6 +196,9 @@ shinyUI(
                                   input.feature_choice != 'Colocalization (number)' &&
                                   input.feature_choice != 'Colocalization (size)' &&
                                   input.feature_choice != 'Colocalization (signal)' &&
+                                  input.feature_choice != 'RatioScreen' &&
+                                  input.feature_choice != 'RatioScreen normalized' &&
+                                  input.feature_choice != 'Colocalization (signal)' &&
                                   input.feature_choice != 'Total object volume Venn diagram'
                                   ",
                                   br(),
@@ -204,12 +209,31 @@ shinyUI(
                                   
                                   
                                 ),
-                                #colocalization 
+                                #ratioscreen 
+                                conditionalPanel(
+                                  
+                                  condition = "input.feature_choice == 'RatioScreen'
+                                  || input.feature_choice == 'RatioScreen normalized'",
+                                  
+                                  
+                                  selectInput("channel_choice_ratioscreen", label=("Colocalization ratio of channel ..."), width='600px',
+                                              choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3), 
+                                              selected = 1),
+                                  
+                                  selectizeInput("channel_choice_ratioscreen2", label=("with channels :"), width='600px',
+                                                 choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3),
+                                                 multiple=TRUE,
+                                                 options = list(maxItems = 2)
+                                  )
+                                  
+                                ),
+                                
                                 conditionalPanel(
                                   
                                   condition = "input.feature_choice == 'Colocalization (number)'
                                   || input.feature_choice == 'Colocalization (size)'
-                                  || input.feature_choice == 'Colocalization (signal)'",
+                                  || input.feature_choice == 'Colocalization (signal)'
+                                  ",
                                   
                                   selectInput("channel_choice_coloc", label=("Percentage of channel ..."), width='600px',
                                               choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3), 
@@ -219,9 +243,9 @@ shinyUI(
                                                  choices = list("Channel 1" = 1, "Channel 2" = 2, "Channel 3" = 3),
                                                  multiple=TRUE,
                                                  options = list(maxItems = 2)
-                                  
-                                      )
-                                    ),
+                                                 
+                                  )
+                                ),
                                 
                                 conditionalPanel(
                                   condition=("input.feature_choice == 'Total object volume Venn diagram'"),

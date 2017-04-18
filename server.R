@@ -239,6 +239,8 @@ feature_computation <- function(type, data, channel, overlapChannel, max_sizes, 
          "Colocalization (number)" = 100*coloc(data, channel, overlapChannel, max_sizes, min_sizes, min_intensities,condnames),
          "Colocalization (size)" = 100*colocSize(data, channel, overlapChannel, max_sizes, min_sizes, min_intensities,condnames),
          "Colocalization (signal)" = 100*colocSignal(data, channel, overlapChannel, max_sizes, min_sizes, min_intensities,condnames),
+         "RatioScreen" = ratioscr(data, channel, overlapChannel, max_sizes, min_sizes, min_intensities,condnames),
+         "RatioScreen normalized" = ratioscr_norm(data, channel, overlapChannel, max_sizes, min_sizes, min_intensities,condnames),
          "Total object signal" = total_ves_signal(data,channel,FALSE,condnames),
          "Total object signal / Cell Size" = total_ves_signal(data,channel,TRUE,condnames),
          "Total object volume" = total_ves_volume(data,FALSE,channel),
@@ -854,6 +856,14 @@ colocSignal = function(data_list, channel, overlapChannel, max_sizes, min_sizes,
     }
   }
   
+  print('channel')
+  print(channel)
+  print('channel column')
+  print(channel_column)
+  print('overlapchannel')
+  print(overlapChannel)
+  
+  
   maxSizeOv=min(max_sizes[overlapChannel])
   minSizeOv=max(min_sizes[overlapChannel])
   minIntOv=max(min_intensities[overlapChannel])
@@ -899,7 +909,204 @@ colocSignal = function(data_list, channel, overlapChannel, max_sizes, min_sizes,
 }
 
 
+#ratioscreen size based
+ratioscr = function(data_list, channel, overlapChannel, max_sizes, min_sizes, min_intensities,condnames){
+  #create variables...
+  NC = length(data_list) # number of conditions
+  res=matrix(nrow=max(max_imgs),ncol=NC)
+  channel_column = channel+4
 
+colocSizeString1=paste0("Coloc.object.size.ch",overlapChannel[1])
+colocIntString1=paste0("Coloc.object.intensity.ch",overlapChannel[1])
+overlapString1 = paste0("Overlap.with.ch",overlapChannel[1])
+
+colocSizeString2=paste0("Coloc.object.size.ch",overlapChannel[2])
+colocIntString2=paste0("Coloc.object.intensity.ch",overlapChannel[2])
+overlapString2 = paste0("Overlap.with.ch",overlapChannel[2])
+
+  
+  maxSizeOv=min(max_sizes[overlapChannel])
+  minSizeOv=max(min_sizes[overlapChannel])
+  minIntOv=max(min_intensities[overlapChannel])
+  
+  #loop on conditions and images
+  for(cond in 1:NC){
+    imgids = data_list[[cond]][[4]][,"Image.ID"]
+    k=1
+    for( imgid in imgids ){
+      incProgress(amount = 1/(NC*imgids), detail = condnames[cond])
+      cond_ch_df=data_list[[cond]][[channel_column]]
+      img_df=(cond_ch_df[cond_ch_df$Image.ID==imgid,])
+      #print(img_df)
+      n1=nrow(img_df)
+      coInt1=0
+      coInt2=0
+      
+      
+      if(n1!=0){
+        ov1=0
+        ov2=0
+        for(ves in 1:n1){
+          #print(img_df[ves,colocSizeString])
+          
+          if(img_df[ves,colocSizeString1] > maxSizeOv || img_df[ves,colocSizeString1] < minSizeOv || img_df[ves,colocIntString1] < minIntOv ){
+            ov1=0
+          }else{ ov1 = img_df[ves,overlapString1]} #objects colocalizing with non valid objects are considered non colocalizing
+          
+          if(img_df[ves,colocSizeString2] > maxSizeOv || img_df[ves,colocSizeString2] < minSizeOv || img_df[ves,colocIntString2] < minIntOv ){
+            ov2=0
+          }else{ ov2 = img_df[ves,overlapString2]}
+          
+          coInt1=coInt1 + ov1 * img_df[ves,'Size']
+          coInt2=coInt2 + ov2 * img_df[ves,'Size']
+          
+        }
+        if(coInt2 == 0)
+          resImg=1
+        else
+        resImg=coInt1/coInt2
+      }
+      else{
+        resImg=0
+      }
+      
+      res[k,cond]=resImg
+      
+      k=k+1
+    }
+  }
+  
+  return(res)  
+  
+}
+
+
+ratioscr_norm = function(data_list, channel, overlapChannel, max_sizes, min_sizes, min_intensities,condnames){
+  #create variables...
+  NC = length(data_list) # number of conditions
+  res=matrix(nrow=max(max_imgs),ncol=NC)
+  channel_column = channel+4
+  
+  #print('channel')
+  #print(channel)
+  #print('overlapchannel')
+  #print(overlapChannel[1])
+  
+  channel_column1 = overlapChannel[1]+4
+  channel_column2 = overlapChannel[2]+4
+  
+  colocSizeString1=paste0("Coloc.object.size.ch",overlapChannel[1])
+  colocIntString1=paste0("Coloc.object.intensity.ch",overlapChannel[1])
+  overlapString1 = paste0("Overlap.with.ch",overlapChannel[1])
+  
+  colocSizeString2=paste0("Coloc.object.size.ch",overlapChannel[2])
+  colocIntString2=paste0("Coloc.object.intensity.ch",overlapChannel[2])
+  overlapString2 = paste0("Overlap.with.ch",overlapChannel[2])
+  
+  
+  
+  #print(colocSizeString1)
+  #print(colocIntString1)
+  #print(overlapString1)
+  
+  #print(colocSizeString2)
+  #print(colocIntString2)
+  #print(overlapString2)
+  
+  
+  
+  maxSizeOv=min(max_sizes[overlapChannel])
+  minSizeOv=max(min_sizes[overlapChannel])
+  minIntOv=max(min_intensities[overlapChannel])
+  
+  #loop on conditions and images
+  for(cond in 1:NC){
+    imgids = data_list[[cond]][[4]][,"Image.ID"]
+   
+    
+    
+     k=1
+    for( imgid in imgids ){
+      incProgress(amount = 1/(NC*imgids), detail = condnames[cond])
+      
+      cond_ch_df=data_list[[cond]][[channel_column]]
+      img_df=(cond_ch_df[cond_ch_df$Image.ID==imgid,])
+      
+      
+      cond_ch_df1=data_list[[cond]][[channel_column1]]
+      img_df1=(cond_ch_df1[cond_ch_df1$Image.ID==imgid,])
+      nn1=nrow(img_df1)
+      ts1=0
+      if(nn1==0)
+        ts1=0
+      else{
+        for(ves in 1:nn1){
+          ts1 = ts1 + img_df1[ves,'Size']
+        }
+      }
+      
+      if(ts1==0)ts1=1
+      
+      cond_ch_df2=data_list[[cond]][[channel_column2]]
+      img_df2=(cond_ch_df2[cond_ch_df2$Image.ID==imgid,])
+      nn2=nrow(img_df2)
+      ts2=0
+      if(nn2==0)
+        ts2=0
+      else{
+        for(ves in 1:nn2){
+          ts2 = ts2 + img_df2[ves,'Size']
+        }
+      }
+      
+      #print(img_df)
+      n1=nrow(img_df)
+      
+      #print('n1')
+      #print(n1)
+      coInt1=0
+      coInt2=0
+      
+      
+      if(n1!=0){
+        ov1=0
+        ov2=0
+        for(ves in 1:n1){
+          #print(img_df[ves,colocSizeString])
+          
+          if(img_df[ves,colocSizeString1] > maxSizeOv || img_df[ves,colocSizeString1] < minSizeOv || img_df[ves,colocIntString1] < minIntOv ){
+            ov1=0
+          }else{ ov1 = img_df[ves,overlapString1]} #objects colocalizing with non valid objects are considered non colocalizing
+          
+          if(img_df[ves,colocSizeString2] > maxSizeOv || img_df[ves,colocSizeString2] < minSizeOv || img_df[ves,colocIntString2] < minIntOv ){
+            ov2=0
+          }else{ ov2 = img_df[ves,overlapString2]}
+          
+          coInt1=coInt1 + ov1 * img_df[ves,'Size']
+          coInt2=coInt2 + ov2 * img_df[ves,'Size']
+          
+        }
+        if(coInt2 == 0)
+          resImg=1
+        else
+          resImg=(coInt1/coInt2) * (ts2/ts1)
+      }
+      else{
+        resImg=0
+      }
+      
+      res[k,cond]=resImg
+      
+      k=k+1
+    }
+     
+     
+     
+  }
+  
+  return(res)  
+  
+}
 
 ####################################################################################
 ##################     Statistical analysis       ##################################
@@ -1464,7 +1671,15 @@ ismovie <- reactive({
   })
   
   colocChannels <- reactive({
-    as.integer(input$channel_choice_coloc2)
+    feature= input$feature_choice
+    if(feature %in% c('RatioScreen','RatioScreen normalized'))
+    {
+      res=as.integer(input$channel_choice_ratioscreen2)
+    }
+    else
+      res=as.integer(input$channel_choice_coloc2)
+    
+    res
   })
   
   ChannelChoice <- reactive({
@@ -1473,6 +1688,7 @@ ismovie <- reactive({
     p=as.integer(input$channel_choice_pearson)
     a=as.integer(input$channel_choice_all)
     coloc=as.integer(input$channel_choice_coloc)
+    ratioscreen=as.integer(input$channel_choice_ratioscreen)
     
     res=a
     
@@ -1480,6 +1696,13 @@ ismovie <- reactive({
     {
       res=coloc
     }
+    
+    if(feature %in% c('RatioScreen','RatioScreen normalized'))
+    {
+      res=ratioscreen
+    }
+    
+    
     if(feature %in% c('Pearson correlation','Pearson correlation inside cell mask'))
     {
       #print('pearson ici')
@@ -1765,6 +1988,10 @@ output$excluded_imgs <- renderText({
           )
         ||
           (input$feature_choice %in% c('Total object volume Venn diagram'))
+        ||
+        (input$feature_choice %in% c('RatioScreen','RatioScreen normalized')
+         && (length(input$channel_choice_ratioscreen2)<2)
+         )
       )
       NULL
     else {
@@ -1958,7 +2185,9 @@ rollmean_data <- reactive({
    chans=c(input$ch1name,input$ch2name,input$ch3name)
    coloc=input$feature_choice %in%  c('Colocalization (number)','Colocalization (size)','Colocalization (signal)') 
     pearson =input$feature_choice %in%  c('Pearson correlation','Pearson correlation inside cell mask')
-    other = !coloc && !pearson
+    ratioscreen=input$feature_choice %in%  c('RatioScreen','RatioScreen normalized') 
+    other = !coloc && !pearson && ! ratioscreen
+    
 
 if(other)
   res=chans[ChannelChoice()]
@@ -1968,6 +2197,11 @@ if(coloc){
   res=paste(chans[ChannelChoice()],'with',paste(chans[colocChannels()], collapse=', '))
   
 }
+  if(ratioscreen){
+    
+    res = paste('Ratio of',chans[colocChannels()[1]],'to',chans[colocChannels()[2]], 'colocalizing with', chans[ChannelChoice()])
+  }  
+    
   if(pearson) {
     if(max_channels()==2)
       res=paste(chans[1],'and',chans[2])
@@ -2114,7 +2348,17 @@ observe({
   #print("update coloc2")
   maxc = max_channels()
   #print(maxc)
-  coloc1=input$channel_choice_coloc
+  
+  feature= input$feature_choice
+  #print(feature)
+  if(feature %in% c('RatioScreen','RatioScreen normalized'))
+  {
+    coloc1=input$channel_choice_ratioscreen
+  }
+  else
+    coloc1=input$channel_choice_coloc
+  
+
   #print(coloc1)
   if(maxc==2){
     
@@ -2148,6 +2392,9 @@ observe({
       updateSelectInput(session, "channel_choice_coloc2",
                         choices = vecc
       )
+      updateSelectInput(session, "channel_choice_ratioscreen2",
+                        choices = vecc
+      )
     }
     
     if(coloc1==2){
@@ -2156,12 +2403,18 @@ observe({
       updateSelectInput(session, "channel_choice_coloc2",
                         choices = vecc
       )
+      updateSelectInput(session, "channel_choice_ratioscreen2",
+                        choices = vecc
+      )
     }
     
     if(coloc1==3){
       vecc=c(1,2)
       names(vecc)<-c(input$ch1name,input$ch2name)
       updateSelectInput(session, "channel_choice_coloc2",
+                        choices = vecc
+      )
+      updateSelectInput(session, "channel_choice_ratioscreen2",
                         choices = vecc
       )
     }
@@ -2228,6 +2481,8 @@ observe({
                           "Colocalization (number)", 
                           "Colocalization (size)", 
                           "Colocalization (signal)",
+                          "RatioScreen",
+                          "RatioScreen normalized",
                           "Pearson correlation", 
                           "Pearson correlation inside cell mask", 
                           "Total object volume Venn diagram",
@@ -2258,6 +2513,9 @@ observe({
       updateSelectInput(session, "channel_choice_coloc",
                         choices = vecc
       )
+      updateSelectInput(session, "channel_choice_ratioscreen",
+                        choices = vecc
+      )
       updateSelectInput(session,"feature_choice",
                         choices=
                           c("Mean object volume", 
@@ -2268,6 +2526,8 @@ observe({
                             "Colocalization (signal)",
                             "Pearson correlation", 
                             "Pearson correlation inside cell mask", 
+                            "RatioScreen",
+                            "RatioScreen normalized",
                             "Total object volume Venn diagram",
                             "Total object signal",
                             "Total object signal / Cell Size",

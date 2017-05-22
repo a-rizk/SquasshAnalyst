@@ -1,7 +1,7 @@
 library(shiny)
 
 source("package_handling.R") 
-libraries <- c("VennDiagram","gtools","zoo","rappdirs")#,"dunn.test" , "asbio" is crashing
+libraries <- c("VennDiagram","gtools","zoo","rappdirs","tcltk")#,"dunn.test" , "asbio" is crashing
 #print(libraries)
 for(library in libraries) 
 { 
@@ -22,10 +22,19 @@ choose_dir_mac <- function() {
   return(ifelse(length(p), p, NA))
 }
 
+
+choose_dir_linux <- function() {
+  setwd('~')
+  dir <- tclvalue(tkchooseDirectory())
+  return(dir)
+}
+
 #if(is.na(a)) stop("No folder", call. = F)
 
 onwindows <<- grepl("windows", .Platform$OS.type, fixed=TRUE)
 onmacos <<- grepl("Darwin", Sys.info()["sysname"], fixed=TRUE)
+
+onlinux <<- grepl("Linux", Sys.info()["sysname"], fixed=TRUE)
 
 #print(onmacos)
 
@@ -1572,7 +1581,11 @@ select_path <- reactive({
       #print("select mac dir")
       if(onmacos)
         selected_path <<- choose_dir_mac() 
-      else{
+      else
+        if(onlinux)
+        {selected_path <<- choose_dir_linux()}
+        else
+        {
         dir.create(user_cache_dir('R'), showWarnings = FALSE, recursive = TRUE)
         path_file=file.path(user_cache_dir('R'),'squasshpath')
         
